@@ -29,7 +29,7 @@ public:
 
     BombComponent(int timer, int damage)
     {
-        m_bombTimer = timer*1000 + SDL_GetTicks();
+        m_bombTimer = timer * 1000 + SDL_GetTicks();
         m_damage = damage;
     }
 
@@ -50,6 +50,9 @@ public:
 
         m_entity->addComponent<SpriteComponent>("Sprites/bomb.png");
         m_entity->addComponent<ColliderComponent>("bomb");
+        m_entity->addGroup(groupColliders);
+        m_entity->addGroup(groupBombs);
+
     }
 
     void update() override

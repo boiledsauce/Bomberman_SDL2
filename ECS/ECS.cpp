@@ -2,6 +2,8 @@
 // Created by lowIQ on 2021-06-24.
 //
 #include "ECS.h"
+int Entity::s_entityCount = 0;
+
 
 void Entity::addGroup(Group mGroup)
 {

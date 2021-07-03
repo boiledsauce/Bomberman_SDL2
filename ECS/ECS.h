@@ -51,6 +51,8 @@ public:
 class Entity
 {
 private:
+    static int s_entityCount;
+    int m_entityID;
     Manager& m_manager;
     bool m_active = true;
     std::vector<std::unique_ptr<Component>> m_components;
@@ -59,7 +61,8 @@ private:
     GroupBitset m_groupBitset;
 
 public:
-    Entity(Manager& manager) : m_manager(manager){}
+    Entity(Manager& manager) : m_manager(manager){m_entityID = s_entityCount++;}
+    int entityID(){return m_entityID;}
 
     void update()
     {

@@ -21,11 +21,6 @@ SDL_Event Game::s_event;
 
 
 //auto& player(manager.addEntity());
-auto& wall(manager.addEntity());
-
-auto& tile0(manager.addEntity());
-auto& tile1(manager.addEntity());
-auto& tile2(manager.addEntity());
 
 
 std::map<std::pair<int,int>, TileComponent*> Game::s_tiles;
@@ -66,7 +61,6 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
                     SDL_SetRenderDrawColor(s_renderer, 255, 255, 255, 255);
                     std::cout << "Renderer created!" << std::endl;
                 }
-
                 isRunning = true;
     }
     map = new Map();
@@ -110,11 +104,17 @@ auto& bombs(manager.getGroup(groupBombs));
 
 void Game::update()
 {
+    std::map<int, std::pair<Vector2D, SDL_Rect>> previousPlayerValues;
 
+    for (auto &player : players)
+    {
 
+            Vector2D playerPos = player->getComponent<TransformComponent>().m_position;
+            SDL_Rect playerCollider = player->getComponent<ColliderComponent>().collider;
 
-    Vector2D oldPos = player.getComponent<TransformComponent>().m_position;
-    SDL_Rect oldCollision = player.getComponent<ColliderComponent>().collider;
+            previousPlayerValues.insert(std::make_pair(player->entityID(), std::make_pair(playerPos, playerCollider)));
+    }
+
 
     manager.refresh();
     manager.update();
@@ -133,8 +133,9 @@ void Game::update()
 
 for (auto &player : players)
 {
-    for (auto &collider : colliders)
+    for (auto &collider : manager.getGroup(groupColliders))
     {
+
         ColliderComponent* cc = &collider->getComponent<ColliderComponent>();
 
         if (Collision::AABB(player->getComponent<ColliderComponent>(), *cc))
@@ -146,18 +147,26 @@ for (auto &player : players)
                 Vector2D bombPos = cc->m_transform->m_position;
 
                 // if your oldPos was on the bomb you placed, let yourself escape it
-                SDL_Rect old = {static_cast<int>(oldPos.x), static_cast<int>(oldPos.y), 32, 32};
+                SDL_Rect old = {static_cast<int>(previousPlayerValues[player->entityID()].first.x),
+                                static_cast<int>(previousPlayerValues[player->entityID()].first.y),
+                                32,
+                                32};
+
                 if (Collision::AABB(old, cc->collider, "player", "bomb"))
                     continue;
+
             }
-            player->getComponent<KeyboardController>().m_transform->m_position = oldPos;
+       /*     std::cout << "PosBefore:" << previousPlayerValues[player->entityID()].first << std::endl;
+            std::cout << "PosNow:" << player->getComponent<TransformComponent>().m_position << std::endl;
+*/
+            player->getComponent<TransformComponent>().m_position = previousPlayerValues[player->entityID()].first;
         }
 
     }
 
-    CreatureAttributeComponent* playerAttributes = &player->getComponent<CreatureAttributeComponent>();
-    TileComponent* currentTile = &player->getComponent<TileComponent>();
-    playerAttributes->m_health -= 100;
+    //CreatureAttributeComponent* playerAttributes = &player->getComponent<CreatureAttributeComponent>();
+    //TileComponent* currentTile = &player->getComponent<TileComponent>();
+    //playerAttributes->m_health -= 100;
 }
 
 
@@ -226,9 +235,4 @@ void Game::AddBomb(int x, int y, int timer, int damage, int radiusX, int radiusY
 
     bomb.addComponent<TransformComponent>(x,y);
     bomb.addComponent<BombComponent>(timer, damage);
-    std::cout << "timer: " << timer << std::endl;
-/*    bomb.addComponent<SpriteComponent>("Sprites/bomb.png");
-    bomb.addComponent<ColliderComponent>("bomb");*/
-
-    bomb.addGroup(groupBombs);
 }
