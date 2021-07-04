@@ -119,17 +119,18 @@ void Game::update()
     manager.refresh();
     manager.update();
 
-    for (auto &bomb : bombs)
+    /*for (auto &bomb : bombs)
     {
         BombComponent* bombComponent = &bomb->getComponent<BombComponent>();
         int bombTimer = bombComponent->m_bombTimer;
 
         if (SDL_GetTicks() > bombComponent->m_bombTimer)
         {
-            std::cout << "Exploding" << std::endl;
-            bombComponent->m_entity->destroy();
+                std::cout << "Exploding" << std::endl;
+                bombComponent->m_entity->destroy();
+
         }
-    }
+    }*/
 
 for (auto &player : players)
 {
@@ -154,7 +155,6 @@ for (auto &player : players)
 
                 if (Collision::AABB(old, cc->collider, "player", "bomb"))
                     continue;
-
             }
        /*     std::cout << "PosBefore:" << previousPlayerValues[player->entityID()].first << std::endl;
             std::cout << "PosNow:" << player->getComponent<TransformComponent>().m_position << std::endl;
@@ -164,9 +164,27 @@ for (auto &player : players)
 
     }
 
-    //CreatureAttributeComponent* playerAttributes = &player->getComponent<CreatureAttributeComponent>();
-    //TileComponent* currentTile = &player->getComponent<TileComponent>();
-    //playerAttributes->m_health -= 100;
+    CreatureAttributeComponent* playerAttributes = &player->getComponent<CreatureAttributeComponent>();
+    auto& playerTransform = player->getComponent<TransformComponent>();
+    int middleXofRect = ((playerTransform.m_position.x+16)/32)*32;
+    int middleYofRect = ((playerTransform.m_position.y+16)/32)*32;
+
+    int x = ((static_cast<int>(playerTransform.m_position.x) + 16) / 32) * 32;
+    int y = ((static_cast<int>(playerTransform.m_position.y) + 16) / 32) * 32;
+
+//    std::cout << x << " " << y << std::endl;
+
+//    std::cout << s_tiles[std::make_pair(x,y)]->tileRect.x << " " << s_tiles[std::make_pair(x,y)]->tileRect.y << std::endl;
+
+
+//    for (auto &itr : s_tiles)
+//    {
+//        std::cout << "(x: " << itr.second->tileRect.x << ", y: " << itr.second->tileRect.y << ")" << std::endl;
+//    }
+
+    auto &tile = Game::s_tiles[std::make_pair(x,y)];
+//    std::cout << tile->m_damage << " " << playerAttributes->m_health << " :" << std::endl;
+    playerAttributes->m_health -= tile->m_damage;
 }
 
 
@@ -221,6 +239,7 @@ void Game::AddTile(int id, int x, int y)
     }
 
     tile.addGroup(groupMap);
+
 }
 
 void Game::AddBomb(int x, int y, int timer, int damage, int radiusX, int radiusY)
@@ -230,9 +249,10 @@ void Game::AddBomb(int x, int y, int timer, int damage, int radiusX, int radiusY
     int middleXofRect = ((x+16)/32)*32;
     int middleYofRect = ((y+16)/32)*32;
 
+    std::cout << middleXofRect << " " << middleYofRect << std::endl;
     x = middleXofRect;
     y = middleYofRect;
 
     bomb.addComponent<TransformComponent>(x,y);
-    bomb.addComponent<BombComponent>(timer, damage);
+    bomb.addComponent<BombComponent>(timer, damage, radiusX, radiusY);
 }

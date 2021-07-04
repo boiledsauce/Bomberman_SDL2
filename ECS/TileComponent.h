@@ -22,6 +22,7 @@ public:
     SDL_Rect tileRect;
     int m_tileID;
     int m_damage = 0;
+    int m_damageTicks = 0;
     const char* m_path;
 
     TileComponent() = default;
@@ -68,6 +69,14 @@ public:
         m_transform = &m_entity->getComponent<TransformComponent>();
         m_entity->addComponent<SpriteComponent>(m_path);
         m_sprite = &m_entity->getComponent<SpriteComponent>();
+    }
+
+    void update() override {
+        if (SDL_GetTicks() >= m_damageTicks)
+        {
+            m_damageTicks = 0;
+            m_damage = 0;
+        }
     }
 };
 #endif //BOMBERMAN_TILECOMPONENT_H

@@ -24,6 +24,15 @@ public:
     m_health(h), m_mana(m), m_bombAmount(bA), m_bombTimer(bT),
     m_explosionRadiusX(eRx), m_explosionRadiusY(eRy), m_explosionDamage(eD)
     {}
+
+    void update() override
+    {
+        if (m_health <= 0)
+        {
+            std::cout << "Player died: " << std::endl;
+            m_entity->destroy();
+        }
+    }
 };
 
 #endif //BOMBERMAN_CREATUREATTRIBUTECOMPONENT_H
