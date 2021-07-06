@@ -202,6 +202,11 @@ void Game::render()
         t->draw();
     }
 
+//    for (auto& b : blocks)
+//    {
+//        b->draw();
+//    }
+
     for (auto& p : players)
     {
         p->draw();
@@ -228,15 +233,32 @@ void Game::clean()
     std::cout << "Game cleaned" << std::endl;
 }
 
+void Game::AddBlock(int x, int y)
+{
+//    auto& block(manager.addEntity());
+//    block.addComponent<BlockComponent>(x,y);
+//    block.addGroup(groupColliders);
+
+}
+
 void Game::AddTile(int id, int x, int y)
 {
     auto& tile(manager.addEntity());
     tile.addComponent<TileComponent>(x, y, SPRITE_SIZE, SPRITE_SIZE, id);
+    int add = SDL_GetTicks()%3;
+
     if (id == 0)
     {
         tile.addComponent<ColliderComponent>("block");
         tile.addGroup(groupColliders);
     }
+    else if (id == 2) {
+        if (add) {
+            tile.addComponent<BlockComponent>(x, y);
+            tile.addGroup(groupColliders);
+        }
+    }
+
 
     tile.addGroup(groupMap);
 

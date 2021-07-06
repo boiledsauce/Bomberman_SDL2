@@ -11,6 +11,7 @@
 #include "SDL.h"
 #include "Constants.h"
 #include "..\Game.h"
+#include "BlockComponent.h"
 
 enum groupLabels : std::size_t;
 
@@ -19,15 +20,18 @@ class TileComponent : public Component
 public:
     TransformComponent* m_transform;
     SpriteComponent* m_sprite;
+    BlockComponent* m_block;
     SDL_Rect tileRect;
     int m_tileID;
     int m_damage = 0;
     int m_damageTicks = 0;
     const char* m_path;
 
+
     TileComponent() = default;
     TileComponent(int x, int y, int w, int h, int id)
     {
+        m_block = nullptr;
         tileRect.x = x;
         tileRect.y = y;
         tileRect.w = w;

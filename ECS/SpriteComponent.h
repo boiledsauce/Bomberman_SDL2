@@ -28,7 +28,9 @@ public:
     std::map<const char*, Animation> m_animations;
 
     SDL_RendererFlip m_spriteFlip = SDL_FLIP_NONE;
-
+    SDL_Texture* getTexture(){ return m_texture; }
+    SDL_Rect &getsrcRect(){ return srcRect; }
+    SDL_Rect &getdestRect(){ return destRect; }
 
     SpriteComponent() = default;
     SpriteComponent(const char* path)

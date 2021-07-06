@@ -44,6 +44,8 @@ public:
     static std::vector<ColliderComponent*> s_colliders;
     static std::map<std::pair<int,int>, TileComponent*> s_tiles;
 
+
+    static void AddBlock(int x, int y);
     static void AddTile(int id, int x, int y);
     static void AddBomb(int x, int y, int timer, int damage, int radX, int radY);
 

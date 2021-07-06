@@ -107,14 +107,21 @@ public:
 
         c->init();
         return *c;
-
     }
+
 
     template<typename T> T& getComponent() const
     {
         auto ptr(m_componentArray[getComponentTypeID<T>()]);
         return *static_cast<T*>(ptr);
     }
+
+    template<typename T> void removeComponent()
+    {
+        m_componentBitSet[getComponentTypeID<T>()] = false;
+        m_componentArray[getComponentTypeID<T>()] = nullptr;
+    }
+
 };
 
 class Manager
