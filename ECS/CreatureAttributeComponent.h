@@ -16,6 +16,9 @@ public:
     int m_explosionRadiusX = 3;
     int m_explosionRadiusY = 3;
     int m_explosionDamage = 100;
+    bool m_canPushBomb = false;
+    bool m_canThrowBomb = false;
+
 
     CreatureAttributeComponent()
     {}

@@ -12,6 +12,7 @@
 #include "Constants.h"
 #include "..\Game.h"
 #include "BlockComponent.h"
+#include "ExplosionComponent.h"
 
 enum groupLabels : std::size_t;
 
@@ -21,16 +22,18 @@ public:
     TransformComponent* m_transform;
     SpriteComponent* m_sprite;
     BlockComponent* m_block;
+    ExplosionComponent* m_explosion;
+
     SDL_Rect tileRect;
     int m_tileID;
-    int m_damage = 0;
-    int m_damageTicks = 0;
     const char* m_path;
 
 
     TileComponent() = default;
     TileComponent(int x, int y, int w, int h, int id)
     {
+        m_explosion = nullptr;
+        bool isExploding = false;
         m_block = nullptr;
         tileRect.x = x;
         tileRect.y = y;
@@ -76,11 +79,7 @@ public:
     }
 
     void update() override {
-        if (SDL_GetTicks() >= m_damageTicks)
-        {
-            m_damageTicks = 0;
-            m_damage = 0;
-        }
+
     }
 };
 #endif //BOMBERMAN_TILECOMPONENT_H

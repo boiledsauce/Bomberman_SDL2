@@ -101,6 +101,7 @@ auto& players(manager.getGroup(groupPlayers));
 auto& enemies(manager.getGroup(groupEnemies));
 auto& colliders(manager.getGroup(groupColliders));
 auto& bombs(manager.getGroup(groupBombs));
+auto& explosions(manager.getGroup(groupExplosions));
 
 void Game::update()
 {
@@ -136,7 +137,6 @@ for (auto &player : players)
 {
     for (auto &collider : manager.getGroup(groupColliders))
     {
-
         ColliderComponent* cc = &collider->getComponent<ColliderComponent>();
 
         if (Collision::AABB(player->getComponent<ColliderComponent>(), *cc))
@@ -166,32 +166,29 @@ for (auto &player : players)
 
     CreatureAttributeComponent* playerAttributes = &player->getComponent<CreatureAttributeComponent>();
     auto& playerTransform = player->getComponent<TransformComponent>();
-    int middleXofRect = ((playerTransform.m_position.x+16)/32)*32;
-    int middleYofRect = ((playerTransform.m_position.y+16)/32)*32;
+    int middleXofRect = ((playerTransform.m_position.x + 16) / 32) * 32;
+    int middleYofRect = ((playerTransform.m_position.y + 16) / 32) * 32;
 
     int x = ((static_cast<int>(playerTransform.m_position.x) + 16) / 32) * 32;
     int y = ((static_cast<int>(playerTransform.m_position.y) + 16) / 32) * 32;
 
-//    std::cout << x << " " << y << std::endl;
+    for (auto &explosion : explosions)
+    {
+        auto &tile = Game::s_tiles[std::make_pair(x,y)];
 
-//    std::cout << s_tiles[std::make_pair(x,y)]->tileRect.x << " " << s_tiles[std::make_pair(x,y)]->tileRect.y << std::endl;
+        if (tile->m_explosion)
+            playerAttributes->m_health -= explosion->getComponent<ExplosionComponent>().m_damage;
 
-
-//    for (auto &itr : s_tiles)
-//    {
-//        std::cout << "(x: " << itr.second->tileRect.x << ", y: " << itr.second->tileRect.y << ")" << std::endl;
-//    }
-
-    auto &tile = Game::s_tiles[std::make_pair(x,y)];
+    }
+//    auto &tile = Game::s_tiles[std::make_pair(x,y)];
 //    std::cout << tile->m_damage << " " << playerAttributes->m_health << " :" << std::endl;
-    playerAttributes->m_health -= tile->m_damage;
+//    playerAttributes->m_health -= tile->m_damage;
 }
 
 
 
 
 }
-
 
 
 void Game::render()
@@ -202,10 +199,11 @@ void Game::render()
         t->draw();
     }
 
-//    for (auto& b : blocks)
-//    {
-//        b->draw();
-//    }
+    for (auto& e : explosions)
+    {
+        e->draw();
+    }
+
 
     for (auto& p : players)
     {
@@ -216,6 +214,11 @@ void Game::render()
     {
         b->draw();
     }
+
+//    for (auto &ae : areaeffects)
+//    {
+//        ae->draw();
+//    }
 
     for (auto& e : enemies)
     {
@@ -277,4 +280,11 @@ void Game::AddBomb(int x, int y, int timer, int damage, int radiusX, int radiusY
 
     bomb.addComponent<TransformComponent>(x,y);
     bomb.addComponent<BombComponent>(timer, damage, radiusX, radiusY);
+}
+
+void Game::AddExplosion(int x, int y, int damage, int duration)
+{
+    auto &explosion(manager.addEntity());
+    explosion.addGroup(groupExplosions);
+    explosion.addComponent<ExplosionComponent>(x, y, damage, duration);
 }

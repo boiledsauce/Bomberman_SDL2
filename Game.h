@@ -11,6 +11,7 @@
 #include <vector>
 #include <map>
 
+
 class TileComponent;
 class ColliderComponent;
 
@@ -20,6 +21,7 @@ enum groupLabels : std::size_t
     groupPlayers,
     groupEnemies,
     groupColliders,
+    groupExplosions,
     groupBombs
 };
 
@@ -48,6 +50,9 @@ public:
     static void AddBlock(int x, int y);
     static void AddTile(int id, int x, int y);
     static void AddBomb(int x, int y, int timer, int damage, int radX, int radY);
+    static void AddExplosion(int x, int y, int damage, int duration);
+
+
 
 private:
     int m_updateCounter;

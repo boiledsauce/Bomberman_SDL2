@@ -13,5 +13,6 @@
 #include "TileComponent.h"
 #include "CreatureAttributeComponent.h"
 #include "BlockComponent.h"
+#include "ExplosionComponent.h"
 
 #endif //BOMBERMAN_COMPONENTS_H
