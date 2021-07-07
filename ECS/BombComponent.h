@@ -70,26 +70,24 @@ public:
         {
             addExplodingTiles();
 
-            std::cout << "Exploding" << std::endl;
-            std::cout << "Coordinates" << std::endl;
+//            std::cout << "Exploding" << std::endl;
 
             for (auto &itr : m_explodingTiles)
             {
-                auto &tile = Game::s_tiles[std::make_pair(itr.first,itr.second)];
+                auto &tile = Game::s_tiles[std::make_pair(itr.first, itr.second)];
 
                 if (tile->m_entity->hasComponent<BlockComponent>())
                 {
                     tile->m_entity->removeComponent<BlockComponent>();
                     tile->m_entity->removeGroup(groupColliders);
                     tile->m_entity->removeGroup(groupMap);
-
                 }
-                Game::AddExplosion(itr.first, itr.second, 100, m_damage);
-
-//                std::cout << "[ " << itr.first << " : " << itr.second << " ]" << std::endl;
-//                Game::s_tiles[std::make_pair(itr.first, itr.second)]->m_damage = m_damage;
-//                Game::s_tiles[std::make_pair(itr.first, itr.second)]->m_damageTicks = SDL_GetTicks()+750;
-
+                BombComponent* bomb = Game::Bomb(itr.first, itr.second);
+                if (bomb && (bomb->m_entity->entityID() != this->m_entity->entityID()))
+                {
+                    bomb->m_bombTimer = 0;
+                }
+                Game::AddExplosion(itr.first, itr.second, m_damage, 1000);
             }
 
             m_entity->destroy();

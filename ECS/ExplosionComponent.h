@@ -4,8 +4,9 @@
 
 #ifndef BOMBERMAN_EXPLOSIONCOMPONENT_H
 #define BOMBERMAN_EXPLOSIONCOMPONENT_H
+
+#include "ECS.h"
 #include "Components.h"
-#include "../Game.h"
 #include "TileComponent.h"
 
 class ExplosionComponent : public Component
@@ -13,11 +14,12 @@ class ExplosionComponent : public Component
 public:
     int m_x;
     int m_y;
-    int m_damage = 0;
+    int m_damage = 25;
     int m_duration = 1000;
 
     ExplosionComponent(int x, int y, int damage, int duration)
     {
+
         m_x = x;
         m_y = y;
         m_damage = damage;
@@ -33,8 +35,14 @@ public:
     {
         if (m_duration <= SDL_GetTicks())
         {
-            TileComponent* tile = Game::s_tiles[std::make_pair(m_x, m_y)];
+//            auto &pos = m_entity->getComponent<TransformComponent>().m_position;
+//            auto posX = static_cast<int>(pos.x);
+//            auto posY = static_cast<int>(pos.y);
+//
+//            TileComponent* tile = Game::s_tiles[std::make_pair(posX,posY)];
+            std::cout << "1" << std::endl;
             m_entity->destroy();
+            std::cout << "2" << std::endl;
         }
     }
 

@@ -32,7 +32,6 @@ public:
     TileComponent() = default;
     TileComponent(int x, int y, int w, int h, int id)
     {
-        m_explosion = nullptr;
         bool isExploding = false;
         m_block = nullptr;
         tileRect.x = x;

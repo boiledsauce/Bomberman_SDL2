@@ -66,7 +66,10 @@ public:
 
     void update()
     {
-        for (auto& c : m_components){ c->update(); }
+        for (auto& c : m_components)
+        {
+                c->update();
+        }
     }
     void draw()
     {
@@ -134,6 +137,7 @@ public:
     {
         for (auto& e : m_entities)
         {
+
             e->update();
         }
     }

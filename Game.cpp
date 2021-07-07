@@ -175,10 +175,12 @@ for (auto &player : players)
     for (auto &explosion : explosions)
     {
         auto &tile = Game::s_tiles[std::make_pair(x,y)];
+        auto &explosionPos = explosion->getComponent<TransformComponent>().m_position;
+        auto &explosionPosX = explosionPos.x;
+        auto &explosionPosY = explosionPos.y;
 
-        if (tile->m_explosion)
+        if ( x ==  explosionPosX && y == explosionPosY)
             playerAttributes->m_health -= explosion->getComponent<ExplosionComponent>().m_damage;
-
     }
 //    auto &tile = Game::s_tiles[std::make_pair(x,y)];
 //    std::cout << tile->m_damage << " " << playerAttributes->m_health << " :" << std::endl;
@@ -248,7 +250,7 @@ void Game::AddTile(int id, int x, int y)
 {
     auto& tile(manager.addEntity());
     tile.addComponent<TileComponent>(x, y, SPRITE_SIZE, SPRITE_SIZE, id);
-    int add = SDL_GetTicks()%3;
+    int add = SDL_GetTicks()%5;
 
     if (id == 0)
     {
@@ -258,7 +260,7 @@ void Game::AddTile(int id, int x, int y)
     else if (id == 2) {
         if (add) {
             tile.addComponent<BlockComponent>(x, y);
-            tile.addGroup(groupColliders);
+            tile.addGroup(groupColliders );
         }
     }
 
@@ -287,4 +289,25 @@ void Game::AddExplosion(int x, int y, int damage, int duration)
     auto &explosion(manager.addEntity());
     explosion.addGroup(groupExplosions);
     explosion.addComponent<ExplosionComponent>(x, y, damage, duration);
+
+}
+
+bool Game::hasExplosion(int x, int y)
+{
+    return true || false;
+}
+
+BombComponent* Game::Bomb(int x, int y)
+{
+    for (auto &bomb : bombs)
+    {
+        auto &position = bomb->getComponent<TransformComponent>().m_position;
+        auto bombPosX = static_cast<int>(position.x);
+        auto bombPosY = static_cast<int>(position.y);
+
+        if (x == bombPosX && y == bombPosY)
+            return &bomb->getComponent<BombComponent>();
+    }
+
+    return nullptr;
 }

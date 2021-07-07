@@ -14,6 +14,8 @@
 
 class TileComponent;
 class ColliderComponent;
+class BombComponent;
+class ExplosionComponent;
 
 enum groupLabels : std::size_t
 {
@@ -51,6 +53,9 @@ public:
     static void AddTile(int id, int x, int y);
     static void AddBomb(int x, int y, int timer, int damage, int radX, int radY);
     static void AddExplosion(int x, int y, int damage, int duration);
+    bool Game::hasExplosion(int x, int y);
+
+    static BombComponent* Bomb(int x, int y);
 
 
 
