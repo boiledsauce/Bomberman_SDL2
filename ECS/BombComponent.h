@@ -14,6 +14,7 @@
 class BombComponent : public Component
 {
 public:
+    bool m_shouldExplode = false;
     int m_bombTimer = 3000;
     int m_damage = 100;
     int m_radiusX = 3;
@@ -51,11 +52,6 @@ public:
                     m_explodingTiles.emplace_back(std::make_pair(arr[j].first, arr[j].second));
             }
         }
-//        std::cout << "------------------------------------" << std::endl;
-//        for (auto i : m_explodingTiles)
-//        {
-//            std::cout << i.first << " " << i.second << std::endl;
-//        }
     }
 
     void modifyNeighborBombTimer()
@@ -68,28 +64,25 @@ public:
     {
         if (SDL_GetTicks() > m_bombTimer)
         {
+            m_shouldExplode = true;
             addExplodingTiles();
-
-//            std::cout << "Exploding" << std::endl;
 
             for (auto &itr : m_explodingTiles)
             {
-                auto &tile = Game::s_tiles[std::make_pair(itr.first, itr.second)];
+                    auto &tile = Game::s_tiles[std::make_pair(itr.first, itr.second)];
 
-                if (tile->m_entity->hasComponent<BlockComponent>())
+                    if (tile->m_entity->hasComponent<BlockComponent>())
                 {
-                    tile->m_entity->removeComponent<BlockComponent>();
-                    tile->m_entity->removeGroup(groupColliders);
-                    tile->m_entity->removeGroup(groupMap);
+                        tile->m_entity->removeComponent<BlockComponent>();
+                        tile->m_entity->removeGroup(groupColliders);
+                        tile->m_entity->removeGroup(groupMap);
                 }
-                BombComponent* bomb = Game::Bomb(itr.first, itr.second);
+                  BombComponent* bomb = Game::Bomb(itr.first, itr.second);
                 if (bomb && (bomb->m_entity->entityID() != this->m_entity->entityID()))
                 {
                     bomb->m_bombTimer = 0;
                 }
-                Game::AddExplosion(itr.first, itr.second, m_damage, 1000);
             }
-
             m_entity->destroy();
         }
     }

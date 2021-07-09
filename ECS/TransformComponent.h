@@ -21,6 +21,8 @@ public:
     int m_width = SPRITE_SIZE;
     int m_scale = SPRITE_SCALE_FACTOR;
 
+
+
     TransformComponent()
     {
         m_position.Zero();

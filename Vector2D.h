@@ -35,6 +35,7 @@ public:
     Vector2D& operator*(const int& i);
 
     Vector2D& Zero();
+    int Normalize(int var);
 
 
     friend std::ostream& operator<<(std::ostream& stream, const Vector2D vec);

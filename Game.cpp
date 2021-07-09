@@ -16,7 +16,7 @@ SDL_Window* Game::s_window = nullptr;
 SDL_Renderer* Game::s_renderer = nullptr;
 Map* map;
 
-Manager manager;
+Manager Game::manager;
 SDL_Event Game::s_event;
 
 
@@ -96,12 +96,12 @@ void Game::handleEvents()
     }
 }
 
-auto& tiles(manager.getGroup(groupMap));
-auto& players(manager.getGroup(groupPlayers));
-auto& enemies(manager.getGroup(groupEnemies));
-auto& colliders(manager.getGroup(groupColliders));
-auto& bombs(manager.getGroup(groupBombs));
-auto& explosions(manager.getGroup(groupExplosions));
+auto& tiles(Game::manager.getGroup(groupMap));
+auto& players(Game::manager.getGroup(groupPlayers));
+auto& enemies(Game::manager.getGroup(groupEnemies));
+auto& colliders(Game::manager.getGroup(groupColliders));
+auto& bombs(Game::manager.getGroup(groupBombs));
+auto& explosions(Game::manager.getGroup(groupExplosions));
 
 void Game::update()
 {
@@ -120,20 +120,22 @@ void Game::update()
     manager.refresh();
     manager.update();
 
-    /*for (auto &bomb : bombs)
+
+    for (auto &bomb : bombs)
     {
-        BombComponent* bombComponent = &bomb->getComponent<BombComponent>();
-        int bombTimer = bombComponent->m_bombTimer;
-
-        if (SDL_GetTicks() > bombComponent->m_bombTimer)
+        auto& bombComponent = bomb->getComponent<BombComponent>();
+        if (bombComponent.m_shouldExplode)
         {
-                std::cout << "Exploding" << std::endl;
-                bombComponent->m_entity->destroy();
-
+            auto &bombTiles = bombComponent.m_explodingTiles;
+            for (int i = 0; i < bombComponent.m_explodingTiles.size(); i++)
+            {
+                Game::AddExplosion(bombTiles[i].first, bombTiles[i].second, bombComponent.m_damage, 1000);
+            }
+            bomb->destroy();
         }
-    }*/
+    }
 
-for (auto &player : players)
+for (auto &player : manager.getGroup(groupPlayers))
 {
     for (auto &collider : manager.getGroup(groupColliders))
     {
@@ -141,7 +143,6 @@ for (auto &player : players)
 
         if (Collision::AABB(player->getComponent<ColliderComponent>(), *cc))
         {
-
             if (cc->m_tag == "bomb")
             {
                 Vector2D playerPos = player->getComponent<TransformComponent>().m_position;
@@ -172,7 +173,7 @@ for (auto &player : players)
     int x = ((static_cast<int>(playerTransform.m_position.x) + 16) / 32) * 32;
     int y = ((static_cast<int>(playerTransform.m_position.y) + 16) / 32) * 32;
 
-    for (auto &explosion : explosions)
+    for (auto &explosion : manager.getGroup(groupExplosions))
     {
         auto &tile = Game::s_tiles[std::make_pair(x,y)];
         auto &explosionPos = explosion->getComponent<TransformComponent>().m_position;
@@ -196,35 +197,30 @@ for (auto &player : players)
 void Game::render()
 {
     SDL_RenderClear(s_renderer);
-    for (auto& t : tiles)
+
+    for (auto& t : Game::manager.getGroup(groupMap))
     {
         t->draw();
     }
 
-    for (auto& e : explosions)
+    for (auto& e : Game::manager.getGroup(groupExplosions))
     {
         e->draw();
     }
 
-
-    for (auto& p : players)
+    for (auto& p : Game::manager.getGroup(groupPlayers))
     {
         p->draw();
     }
 
-    for (auto &b : bombs)
+    for (auto &b : Game::manager.getGroup(groupBombs))
     {
         b->draw();
     }
 
-//    for (auto &ae : areaeffects)
-//    {
-//        ae->draw();
-//    }
-
-    for (auto& e : enemies)
+    for (auto& en : Game::manager.getGroup(groupEnemies))
     {
-        e->draw();
+        en->draw();
     }
 
     SDL_RenderPresent(s_renderer);
@@ -260,6 +256,7 @@ void Game::AddTile(int id, int x, int y)
     else if (id == 2) {
         if (add) {
             tile.addComponent<BlockComponent>(x, y);
+            tile.addComponent<ColliderComponent>("block");
             tile.addGroup(groupColliders );
         }
     }
@@ -286,16 +283,15 @@ void Game::AddBomb(int x, int y, int timer, int damage, int radiusX, int radiusY
 
 void Game::AddExplosion(int x, int y, int damage, int duration)
 {
-    auto &explosion(manager.addEntity());
-    explosion.addGroup(groupExplosions);
+    auto &explosion(Game::manager.addEntity());
     explosion.addComponent<ExplosionComponent>(x, y, damage, duration);
-
+    explosion.addGroup(groupExplosions);
 }
 
-bool Game::hasExplosion(int x, int y)
-{
-    return true || false;
-}
+//bool Game::hasExplosion(int x, int y)
+//{
+//    return true || false;
+//}
 
 BombComponent* Game::Bomb(int x, int y)
 {

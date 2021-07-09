@@ -137,7 +137,6 @@ public:
     {
         for (auto& e : m_entities)
         {
-
             e->update();
         }
     }
@@ -159,9 +158,9 @@ public:
             ), std::end(curVector));
         }
 
-        m_entities.erase(std::remove_if(std::begin(m_entities), std::end(m_entities), [] (const std::unique_ptr<Entity> &mEntity)
-        {
-         return ! mEntity->isActive();
+       m_entities.erase(std::remove_if(std::begin(m_entities), std::end(m_entities), [] (const std::unique_ptr<Entity> &mEntity)
+       {
+        return ! mEntity->isActive();
         }), std::end(m_entities));
     }
 

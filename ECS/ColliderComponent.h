@@ -30,15 +30,10 @@ public:
             m_entity->addComponent<TransformComponent>();
         }
         m_transform = &m_entity->getComponent<TransformComponent>();
-        Game::s_colliders.push_back(this);
     }
 
     void update() override
     {
-        /*
-        std::cout << " Transf" << m_transform->m_position.x;
-        std::cout << " Transf" << m_transform->m_position.y << std::endl;
-         */
 
         collider.x = static_cast<int>(m_transform->m_position.x);
         collider.y = static_cast<int>(m_transform->m_position.y);

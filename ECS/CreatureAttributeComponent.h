@@ -32,7 +32,6 @@ public:
     {
         if (m_health <= 0)
         {
-            std::cout << "Player died: " << std::endl;
             m_entity->destroy();
         }
     }

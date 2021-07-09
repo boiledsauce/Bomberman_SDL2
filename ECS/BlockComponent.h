@@ -26,22 +26,9 @@ public:
 
     void init() override
     {
-        std::cout << "hello";
         m_entity->addComponent<TransformComponent>(m_x, m_y);
         m_entity->addComponent<SpriteComponent>("Sprites/block.png");
-        m_entity->addComponent<ColliderComponent>("block");
-
         //m_entity->addGroup(groupColliders);
-    }
-
-    void update() override
-    {
-
-    }
-
-    void draw() override
-    {
-
     }
 
 

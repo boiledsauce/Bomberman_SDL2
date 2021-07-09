@@ -7,7 +7,7 @@
 
 #include "ECS.h"
 #include "Components.h"
-#include "TileComponent.h"
+#include "../Game.h"
 
 class ExplosionComponent : public Component
 {
@@ -40,9 +40,8 @@ public:
 //            auto posY = static_cast<int>(pos.y);
 //
 //            TileComponent* tile = Game::s_tiles[std::make_pair(posX,posY)];
-            std::cout << "1" << std::endl;
+
             m_entity->destroy();
-            std::cout << "2" << std::endl;
         }
     }
 

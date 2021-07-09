@@ -117,3 +117,8 @@ Vector2D& Vector2D::Zero()
     this->y = 0;
     return *this;
 }
+
+int Vector2D::Normalize(int var)
+{
+    return ((var+16)/32)*32;;
+}
