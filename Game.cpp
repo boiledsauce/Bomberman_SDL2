@@ -39,11 +39,8 @@ Game::~Game()
 
 void Game::init(const char *title, int xPos, int yPos, int width, int height, bool fullscreen)
 {
+    isRunning = false;
     int windowFlags = SDL_WINDOW_RESIZABLE | static_cast<int>(fullscreen);
- /* if(fullscreen)
-    {
-        windowFlags = SDL_WINDOW_FULLSCREEN;
-    }*/
 
     if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
     {
@@ -57,16 +54,14 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
                 s_renderer = SDL_CreateRenderer(s_window, -1, SDL_RENDERER_ACCELERATED);
                 if (s_renderer)
                 {
-                    //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
                     SDL_SetRenderDrawColor(s_renderer, 255, 255, 255, 255);
                     std::cout << "Renderer created!" << std::endl;
                 }
-                isRunning = true;
+                Game::mainMenuScreen();
     }
     map = new Map();
     //ecs implementation
     Map::LoadMap("Sprites/bomberman.txt", 25, 25);
-
 
     auto &player = (manager.addEntity());
     player.addComponent<TransformComponent>(400,400,32,32,1);
@@ -79,6 +74,105 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
 
 
 
+}
+
+void Game::mainMenuScreen()
+{
+    enum buttonTypes {NO_BUTTON, GAME_START, GAME_ADD_PLAYER, GAME_PLAYERNAME};
+
+    struct Graphic
+            {
+                SDL_Texture* visual;
+                buttonTypes buttonType;
+                SDL_Rect dimensions;
+                SDL_Rect destination;
+
+                bool isClicked(int mouseXPos, int mouseYPos)
+                {
+                    SDL_Rect mousePos = {mouseXPos, mouseYPos, 0, 0};
+                    bool isInside =
+                    Collision::AABB(destination, mousePos, "button", "mouse");
+
+                    return isInside;
+                }
+            };
+
+
+    std::vector<Graphic> graphicObjects;
+    SDL_Texture* MainScreen = TextureManager::LoadTexture("Sprites/MainMenu/background.png");
+    SDL_Texture* playButton = TextureManager::LoadTexture("Sprites/MainMenu/play.png");
+
+    graphicObjects.push_back({MainScreen, NO_BUTTON, {0,0,800,800}, {0,0,800,800}});
+    graphicObjects.push_back({playButton, GAME_START, {0,0,400,200}, {200,500,400,150}});
+
+    SDL_Rect* currentTextInputButton = nullptr;
+
+    while (! Game::isRunning ) {
+
+        SDL_PollEvent(&s_event);
+
+        switch (s_event.type) {
+            case SDL_QUIT:
+                isRunning = false;
+                return;
+
+            case SDL_TEXTINPUT:
+                if (currentTextInputButton)
+                {
+
+                }
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+            {
+                int mouseXPos;
+                int mouseYPos;
+                SDL_GetMouseState(&mouseXPos, &mouseYPos);
+
+                for (auto &graphicObject : graphicObjects)
+                {
+                    if (graphicObject.isClicked(mouseXPos, mouseYPos))
+                    {
+                        SDL_SetTextureAlphaMod(graphicObject.visual, 100);
+                        std::cout << mouseXPos << " " << mouseYPos << std::endl;
+                        switch (graphicObject.buttonType)
+                        {
+                            case GAME_START:
+                                std::cout << "Starting game " << std::endl;
+                                SDL_Delay(50);
+                                Game::isRunning = true;
+                                break;
+
+                            case GAME_ADD_PLAYER:
+
+                                break;
+
+                            case GAME_PLAYERNAME:
+                                currentTextInputButton = &graphicObject.dimensions;
+                                break;
+
+                            default:
+                                break;
+                        }
+                    }
+                }
+
+
+            }
+                break;
+
+            default:
+                break;
+        }
+
+        for (auto &graphicObject : graphicObjects)
+        {
+            auto &texture = graphicObject.visual;
+            {
+                TextureManager::Draw(texture, graphicObject.dimensions, graphicObject.destination, SDL_FLIP_NONE);
+            }
+        }
+        SDL_RenderPresent(Game::s_renderer);
+    }
 }
 
 void Game::handleEvents()
@@ -105,6 +199,11 @@ auto& explosions(Game::manager.getGroup(groupExplosions));
 
 void Game::update()
 {
+    if (!Game::isRunning)
+    {
+        return;
+    }
+
     std::map<int, std::pair<Vector2D, SDL_Rect>> previousPlayerValues;
 
     for (auto &player : players)
@@ -197,6 +296,11 @@ for (auto &player : manager.getGroup(groupPlayers))
 void Game::render()
 {
     SDL_RenderClear(s_renderer);
+
+    if (! Game::isRunning )
+    {
+        return;
+    }
 
     for (auto& t : Game::manager.getGroup(groupMap))
     {

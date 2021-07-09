@@ -10,7 +10,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
-
+#include "SDL_ttf.h"
 
 class TileComponent;
 class ColliderComponent;
@@ -33,6 +33,14 @@ class Game {
 public:
     Game();
     ~Game();
+
+    struct gameDetails
+    {
+        std::vector<std::string> playerNames;
+        int playerAmount;
+        int botAmount;
+
+    };
 
     void init(const char* title, int xPos, int yPos, int width, int height, bool fullscreen);
 
@@ -59,6 +67,8 @@ public:
     static BombComponent* Bomb(int x, int y);
 
 
+protected:
+    void mainMenuScreen();
 
 private:
     int m_updateCounter;

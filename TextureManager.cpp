@@ -10,6 +10,8 @@ double TextureManager::widthRatio = 1.0f;
 SDL_Texture* TextureManager::LoadTexture(const char *fileName)
 {
     SDL_Surface* tempSurface = IMG_Load(fileName);
+
+
     SDL_Texture* newTexture = SDL_CreateTextureFromSurface(Game::s_renderer,tempSurface);
     SDL_FreeSurface(tempSurface);
     return newTexture;

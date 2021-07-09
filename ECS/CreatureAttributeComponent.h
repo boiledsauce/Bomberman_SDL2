@@ -9,6 +9,7 @@
 class CreatureAttributeComponent : public Component
 {
 public:
+    std::string m_name = "";
     int m_health = 100;
     int m_mana = 100;
     int m_bombAmount = 3;

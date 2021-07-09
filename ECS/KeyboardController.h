@@ -17,11 +17,11 @@ public:
     SpriteComponent *m_sprite;
     CreatureAttributeComponent* m_attributes;
 
-    int m_keyNorth;
-    int m_keySouth;
-    int m_keyLeft;
-    int m_keyRight;
-    int m_keyBomb;
+//    int m_keyNorth;
+//    int m_keySouth;
+//    int m_keyLeft;
+//    int m_keyRight;
+//    int m_keyBomb;
 
 
 
