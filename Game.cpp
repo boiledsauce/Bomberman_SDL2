@@ -57,6 +57,9 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
                     SDL_SetRenderDrawColor(s_renderer, 255, 255, 255, 255);
                     std::cout << "Renderer created!" << std::endl;
                 }
+                if (TTF_Init() > -1)
+                    std::cout << "SDL_TTF text initialized" << std::endl;
+
                 Game::mainMenuScreen();
     }
     map = new Map();
@@ -78,7 +81,9 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
 
 void Game::mainMenuScreen()
 {
-    enum buttonTypes {NO_BUTTON, GAME_START, GAME_ADD_PLAYER, GAME_PLAYERNAME};
+    int playerAmount = 0;
+
+    enum buttonTypes {NO_BUTTON, GAME_START, GAME_ADD_PLAYER, GAME_PLAYERNAME, GAME_REMOVE_PLAYER};
 
     struct Graphic
             {
@@ -97,13 +102,33 @@ void Game::mainMenuScreen()
                 }
             };
 
-
     std::vector<Graphic> graphicObjects;
     SDL_Texture* MainScreen = TextureManager::LoadTexture("Sprites/MainMenu/background.png");
     SDL_Texture* playButton = TextureManager::LoadTexture("Sprites/MainMenu/play.png");
+    SDL_Texture* addPlayer = TextureManager::LoadTexture("Sprites/Mainmenu/addplayer.png");
+    SDL_Texture* removePlayer = TextureManager::LoadTexture("Sprites/Mainmenu/removeplayer.png");
+    SDL_Texture* fontHeadLine = TextureManager::LoadTTF_Texture("Verdana", 50, "Welcome to bomberman", {255,255,255});
+
+    SDL_Texture* p1 = TextureManager::LoadTTF_Texture("Verdana", 10, "Player1", {0,0,255});
+    SDL_Texture* p2 = TextureManager::LoadTTF_Texture("Verdana", 10, "Player2", {255,0,0});
+    SDL_Texture* p3 = TextureManager::LoadTTF_Texture("Verdana", 10, "Player3", {127,0,255});
+    SDL_Texture* p4 = TextureManager::LoadTTF_Texture("Verdana", 10, "Player4", {50,255,255});
+
+    std::array<std::array<SDL_Texture*,2>, 4> players =
+            {
+                    { {TextureManager::LoadTexture("Sprites/chararcter/player.png"), p1},
+                            {TextureManager::LoadTexture("Sprites/chararcter/player2.png"), p2},
+                            {TextureManager::LoadTexture("Sprites/chararcter/player3.png"), p3},
+                            {TextureManager::LoadTexture("Sprites/chararcter/player4.png"), p4}
+                            }
+            };
+
 
     graphicObjects.push_back({MainScreen, NO_BUTTON, {0,0,800,800}, {0,0,800,800}});
     graphicObjects.push_back({playButton, GAME_START, {0,0,400,200}, {200,500,400,150}});
+    graphicObjects.push_back({fontHeadLine, NO_BUTTON, TextureManager::FontNullRect, {150,60,500,100}});
+    graphicObjects.push_back({addPlayer, GAME_ADD_PLAYER, {0,0,100,100}, {200,200,100,100}});
+    graphicObjects.push_back({removePlayer, GAME_REMOVE_PLAYER, {0,0,100,100}, {500,200,100,100}});
 
     SDL_Rect* currentTextInputButton = nullptr;
 
@@ -130,10 +155,13 @@ void Game::mainMenuScreen()
 
                 for (auto &graphicObject : graphicObjects)
                 {
-                    if (graphicObject.isClicked(mouseXPos, mouseYPos))
+
+                    if (graphicObject.isClicked(mouseXPos, mouseYPos) && graphicObject.buttonType)
                     {
                         SDL_SetTextureAlphaMod(graphicObject.visual, 100);
                         std::cout << mouseXPos << " " << mouseYPos << std::endl;
+                        SDL_SetTextureAlphaMod(graphicObject.visual, 255);
+
                         switch (graphicObject.buttonType)
                         {
                             case GAME_START:
@@ -143,9 +171,30 @@ void Game::mainMenuScreen()
                                 break;
 
                             case GAME_ADD_PLAYER:
+                                if (playerAmount < 4)
+                                {
+                                    graphicObjects.push_back({players[playerAmount][0], NO_BUTTON, {0, 0, 32, 32},{125 + (playerAmount * 150), 400, 80, 80}});
+                                    graphicObjects.push_back({players[playerAmount][1], NO_BUTTON, TextureManager::FontNullRect,{125 + (playerAmount * 150), 300, 120, 90}});
 
+                                    playerAmount += 1;
+                                    SDL_Delay(150);
+                                }
                                 break;
 
+                            case GAME_REMOVE_PLAYER:
+                            {
+                                if (playerAmount > 0) {
+                                    std::cout << "Pl: " << playerAmount << std::endl;
+                                    graphicObjects.erase(std::remove_if(graphicObjects.begin(), graphicObjects.end(),[&](Graphic curObj)
+                                                                        {
+                                                                            bool ok = curObj.visual == players[playerAmount-1][0] || curObj.visual == players[playerAmount-1][1];
+                                                                            return ok;
+                                                                        }), graphicObjects.end());
+                                    playerAmount -= 1;
+                                    SDL_Delay(150);
+                                }
+                                break;
+                            }
                             case GAME_PLAYERNAME:
                                 currentTextInputButton = &graphicObject.dimensions;
                                 break;

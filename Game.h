@@ -34,13 +34,13 @@ public:
     Game();
     ~Game();
 
-    struct gameDetails
-    {
-        std::vector<std::string> playerNames;
-        int playerAmount;
-        int botAmount;
-
-    };
+//    struct gameDetails
+//    {
+//        std::vector<std::string> playerNames;
+//        int playerAmount;
+//        int botAmount;
+//
+//    };
 
     void init(const char* title, int xPos, int yPos, int width, int height, bool fullscreen);
 

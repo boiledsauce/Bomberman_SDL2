@@ -20,7 +20,6 @@ public:
     bool m_canPushBomb = false;
     bool m_canThrowBomb = false;
 
-
     CreatureAttributeComponent()
     {}
 
