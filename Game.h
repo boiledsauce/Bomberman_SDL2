@@ -11,6 +11,7 @@
 #include <vector>
 #include <map>
 #include "SDL_ttf.h"
+#include "RandomNumber.h"
 
 class TileComponent;
 class ColliderComponent;
@@ -25,7 +26,8 @@ enum groupLabels : std::size_t
     groupEnemies,
     groupColliders,
     groupExplosions,
-    groupBombs
+    groupBombs,
+    groupRewards
 };
 
 
@@ -60,8 +62,10 @@ public:
 
     static void AddBlock(int x, int y);
     static void AddTile(int id, int x, int y);
-    static void AddBomb(int x, int y, int timer, int damage, int radX, int radY);
+    static void AddBomb(int x, int y, int timer, int damage, int radX, int radY, int *bombAmount);
     static void AddExplosion(int x, int y, int damage, int duration);
+    static void AddReward(int x, int y);
+
     //bool Game::hasExplosion(int x, int y);
 
     static BombComponent* Bomb(int x, int y);

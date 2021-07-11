@@ -8,13 +8,11 @@
 #include "Components.h"
 #include "ColliderComponent.h"
 
-enum reward {SPEED_PLAYER, DAMAGE, RADIUS, SPEED_BOMB, EXTRA_BOMB};
 
 class BlockComponent : public Component
 {
 public:
     int m_health = 100;
-    reward m_reward;
     int m_x;
     int m_y;
 

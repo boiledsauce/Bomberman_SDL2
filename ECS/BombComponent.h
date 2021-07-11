@@ -19,6 +19,7 @@ public:
     int m_damage = 100;
     int m_radiusX = 3;
     int m_radiusY = 3;
+    int *bombAmount = nullptr;
     std::vector<std::pair<int,int>> m_explodingTiles;
 
     void addExplodingTiles()
@@ -54,12 +55,6 @@ public:
         }
     }
 
-    void modifyNeighborBombTimer()
-    {
-
-
-    }
-
     void explode()
     {
         if (SDL_GetTicks() > m_bombTimer)
@@ -76,6 +71,8 @@ public:
                         tile->m_entity->removeComponent<BlockComponent>();
                         tile->m_entity->removeGroup(groupColliders);
                         tile->m_entity->removeGroup(groupMap);
+                        Game::AddReward(tile->m_transform->m_position.Normalize(tile->m_transform->m_position.x), tile->m_transform->m_position.Normalize(tile->m_transform->m_position.y));
+
                 }
                   BombComponent* bomb = Game::Bomb(itr.first, itr.second);
                 if (bomb && (bomb->m_entity->entityID() != this->m_entity->entityID()))
@@ -83,17 +80,20 @@ public:
                     bomb->m_bombTimer = 0;
                 }
             }
+            if (bombAmount)
+                *bombAmount += 1;
+
             m_entity->destroy();
         }
     }
 
-    BombComponent(int timer, int damage, int radiusX, int radiusY)
+    BombComponent(int timer, int damage, int radiusX, int radiusY, int *bombAmount)
     {
         m_bombTimer = timer * 1000 + SDL_GetTicks();
         m_damage = damage;
         m_radiusX = radiusX;
         m_radiusY = radiusY;
-
+        this->bombAmount = bombAmount;
     }
 
     ~BombComponent()

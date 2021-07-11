@@ -34,7 +34,6 @@ public:
 
     void update() override
     {
-
         collider.x = static_cast<int>(m_transform->m_position.x);
         collider.y = static_cast<int>(m_transform->m_position.y);
         collider.w = m_transform->m_width * m_transform->m_scale;

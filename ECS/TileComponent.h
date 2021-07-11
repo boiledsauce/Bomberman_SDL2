@@ -13,7 +13,7 @@
 #include "..\Game.h"
 #include "BlockComponent.h"
 #include "ExplosionComponent.h"
-
+#include "RewardComponent.h"
 enum groupLabels : std::size_t;
 
 class TileComponent : public Component
@@ -21,8 +21,7 @@ class TileComponent : public Component
 public:
     TransformComponent* m_transform;
     SpriteComponent* m_sprite;
-    BlockComponent* m_block;
-    ExplosionComponent* m_explosion;
+
 
     SDL_Rect tileRect;
     int m_tileID;
@@ -32,8 +31,6 @@ public:
     TileComponent() = default;
     TileComponent(int x, int y, int w, int h, int id)
     {
-        bool isExploding = false;
-        m_block = nullptr;
         tileRect.x = x;
         tileRect.y = y;
         tileRect.w = w;
@@ -77,7 +74,8 @@ public:
         m_sprite = &m_entity->getComponent<SpriteComponent>();
     }
 
-    void update() override {
+    void update() override
+    {
 
     }
 };

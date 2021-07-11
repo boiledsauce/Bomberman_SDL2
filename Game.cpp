@@ -11,6 +11,7 @@
 #include "Constants.h"
 #include "ECS/BombComponent.h"
 #include "ECS/TileComponent.h"
+#include "ECS/RewardComponent.h"
 
 SDL_Window* Game::s_window = nullptr;
 SDL_Renderer* Game::s_renderer = nullptr;
@@ -67,11 +68,11 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
     Map::LoadMap("Sprites/bomberman.txt", 25, 25);
 
     auto &player = (manager.addEntity());
+    player.addComponent<CreatureAttributeComponent>();
     player.addComponent<TransformComponent>(400,400,32,32,1);
     player.addComponent<SpriteComponent>("Sprites/chararcter/player.png", true);
     player.addComponent<KeyboardController>();
     player.addComponent<ColliderComponent>("player");
-    player.addComponent<CreatureAttributeComponent>();
     player.addGroup(groupPlayers);
 
 
@@ -279,6 +280,7 @@ void Game::update()
             {
                 Game::AddExplosion(bombTiles[i].first, bombTiles[i].second, bombComponent.m_damage, 1000);
             }
+
             bomb->destroy();
         }
     }
@@ -331,6 +333,49 @@ for (auto &player : manager.getGroup(groupPlayers))
         if ( x ==  explosionPosX && y == explosionPosY)
             playerAttributes->m_health -= explosion->getComponent<ExplosionComponent>().m_damage;
     }
+
+    for (auto &reward : manager.getGroup(groupRewards))
+    {
+        auto &creatureAttributeComponent = player->getComponent<CreatureAttributeComponent>();
+        auto &rewardComponent = reward->getComponent<RewardComponent>();
+
+        SDL_Rect position = {middleXofRect, middleYofRect, 32, 32};
+        SDL_Rect rewardPos = {static_cast<int>(rewardComponent.m_transform->m_position.x), static_cast<int>(rewardComponent.m_transform->m_position.y), 32, 32};
+
+        if (Collision::AABB(position, rewardPos, "", ""))
+        {
+            switch (rewardComponent.m_powerUp)
+            {
+                case SPEED_PLAYER:
+                    playerTransform.m_speed += 0.2;
+                    break;
+
+                case DAMAGE:
+                    playerAttributes->m_explosionDamage += 25;
+                    break;
+
+                case RADIUS:
+                    std::cout << playerAttributes->m_explosionRadiusX << " RadX" << std::endl;
+                    playerAttributes->m_explosionRadiusX += 1;
+                    playerAttributes->m_explosionRadiusY += 1;
+                    std::cout << playerAttributes->m_explosionRadiusX << "RadX #2 " << std::endl;
+                    break;
+
+                case SPEED_BOMB:
+                    playerAttributes->m_bombTimer -= 0.2;
+                    break;
+
+                case EXTRA_BOMB:
+                    playerAttributes->m_bombAmount += 1;
+                    break;
+
+                default:
+                    break;
+            }
+            reward->destroy();
+        }
+    }
+
 //    auto &tile = Game::s_tiles[std::make_pair(x,y)];
 //    std::cout << tile->m_damage << " " << playerAttributes->m_health << " :" << std::endl;
 //    playerAttributes->m_health -= tile->m_damage;
@@ -359,6 +404,11 @@ void Game::render()
     for (auto& e : Game::manager.getGroup(groupExplosions))
     {
         e->draw();
+    }
+
+    for (auto &r : Game::manager.getGroup(groupRewards))
+    {
+        r->draw();
     }
 
     for (auto& p : Game::manager.getGroup(groupPlayers))
@@ -419,7 +469,7 @@ void Game::AddTile(int id, int x, int y)
 
 }
 
-void Game::AddBomb(int x, int y, int timer, int damage, int radiusX, int radiusY)
+void Game::AddBomb(int x, int y, int timer, int damage, int radiusX, int radiusY, int* bombAmount)
 {
 
     auto &bomb(manager.addEntity());
@@ -431,7 +481,7 @@ void Game::AddBomb(int x, int y, int timer, int damage, int radiusX, int radiusY
     y = middleYofRect;
 
     bomb.addComponent<TransformComponent>(x,y);
-    bomb.addComponent<BombComponent>(timer, damage, radiusX, radiusY);
+    bomb.addComponent<BombComponent>(timer, damage, radiusX, radiusY, bombAmount);
 }
 
 void Game::AddExplosion(int x, int y, int damage, int duration)
@@ -459,4 +509,11 @@ BombComponent* Game::Bomb(int x, int y)
     }
 
     return nullptr;
+}
+
+void Game::AddReward(int x, int y)
+{
+    auto &reward(Game::manager.addEntity());
+    reward.addComponent<RewardComponent>(x,y);
+    reward.addGroup(groupRewards);
 }

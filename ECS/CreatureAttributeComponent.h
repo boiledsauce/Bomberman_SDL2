@@ -12,10 +12,10 @@ public:
     std::string m_name = "";
     int m_health = 100;
     int m_mana = 100;
-    int m_bombAmount = 3;
-    int m_bombTimer = 5;
-    int m_explosionRadiusX = 3;
-    int m_explosionRadiusY = 3;
+    int m_bombAmount = 2;
+    float m_bombTimer = 5.0f;
+    int m_explosionRadiusX = 2;
+    int m_explosionRadiusY = 2;
     int m_explosionDamage = 100;
     bool m_canPushBomb = false;
     bool m_canThrowBomb = false;

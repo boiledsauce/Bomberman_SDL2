@@ -6,7 +6,7 @@
 
 bool Collision::AABB(const SDL_Rect &rectA, const SDL_Rect &rectB, std::string tagOne = "", std::string tagTwo = "")
 {
-    int marginOfError = 5;
+    int marginOfError = 10;
 
     if (rectA.x + rectA.w >= rectB.x + marginOfError &&
         rectB.x + rectB.w >= rectA.x + marginOfError &&

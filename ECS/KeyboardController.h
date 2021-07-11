@@ -59,10 +59,12 @@ public:
                 case SDLK_SPACE: {
                     int x = m_transform->m_position.Normalize(m_transform->m_position.x);
                     int y = m_transform->m_position.Normalize(m_transform->m_position.y);
-                    if (Game::Bomb(x, y) == nullptr) {
+                    if (m_attributes->m_bombAmount > 0 && Game::Bomb(x, y) == nullptr) {
+
+                        m_attributes->m_bombAmount -= 1;
                         Game::AddBomb(m_transform->m_position.x, m_transform->m_position.y, m_attributes->m_bombTimer,
                                       m_attributes->m_explosionDamage, m_attributes->m_explosionRadiusX,
-                                      m_attributes->m_explosionRadiusY);
+                                      m_attributes->m_explosionRadiusY,  &m_attributes->m_bombAmount);
                     }
                     break;
                 }

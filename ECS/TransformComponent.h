@@ -16,7 +16,7 @@ public:
     Vector2D m_position;
     Vector2D m_velocity;
 
-    int m_speed = DEFAULT_VELOCITY;
+    double m_speed = DEFAULT_VELOCITY;
     int m_height = SPRITE_SIZE;
     int m_width = SPRITE_SIZE;
     int m_scale = SPRITE_SCALE_FACTOR;
