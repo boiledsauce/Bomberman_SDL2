@@ -13,6 +13,9 @@
 #include "ECS/TileComponent.h"
 #include "ECS/RewardComponent.h"
 
+//#include <boost/asio.hpp>
+//#include <boost/filesystem.hpp>
+
 SDL_Window* Game::s_window = nullptr;
 SDL_Renderer* Game::s_renderer = nullptr;
 Map* map;
@@ -61,26 +64,35 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
                 if (TTF_Init() > -1)
                     std::cout << "SDL_TTF text initialized" << std::endl;
 
-                Game::mainMenuScreen();
+                playerCount = Game::mainMenuScreen();
     }
     map = new Map();
     //ecs implementation
     Map::LoadMap("Sprites/bomberman.txt", 25, 25);
 
-    auto &player = (manager.addEntity());
-    player.addComponent<CreatureAttributeComponent>();
-    player.addComponent<TransformComponent>(400,400,32,32,1);
-    player.addComponent<SpriteComponent>("Sprites/chararcter/player.png", true);
-    player.addComponent<KeyboardController>();
-    player.addComponent<ColliderComponent>("player");
-    player.addGroup(groupPlayers);
+    std::array<std::pair<int,int>, 4> startPos = {std::make_pair(1*32, 1*32), std::make_pair(1*32, 23*32), std::make_pair(23*32, 1*32), std::make_pair(23*32, 23*32) };
+    std::array<std::array<SDL_KeyCode, 5>, 4> controllers = {{
+            {SDLK_UP, SDLK_DOWN, SDLK_RIGHT, SDLK_LEFT, SDLK_SPACE},
+            {SDLK_w, SDLK_s, SDLK_d, SDLK_a, SDLK_TAB},
+            {SDLK_KP_8, SDLK_KP_5, SDLK_KP_6, SDLK_KP_4, SDLK_KP_0},
+            {SDLK_UP, SDLK_DOWN, SDLK_RIGHT, SDLK_LEFT, SDLK_SPACE}
+    }};
 
-
-
-
+    std::cout << "PALYERS: " << playerCount << std::endl;
+    for (int i = 0; i < playerCount; i++)
+    {
+        auto &player = manager.addEntity();
+        player.addComponent<CreatureAttributeComponent>();
+        player.addComponent<TransformComponent>(startPos[i].first, startPos[i].second, 32, 32, 1);
+        std::string spritePath = "Sprites/chararcter/player" + std::to_string(i+1) + ".png";
+        player.addComponent<SpriteComponent>(spritePath.c_str(), true);
+        player.addComponent<KeyboardController>(controllers[i][0], controllers[i][1], controllers[i][2], controllers[i][3], controllers[i][4]);
+        player.addComponent<ColliderComponent>("player");
+        player.addGroup(groupPlayers);
+    }
 }
 
-void Game::mainMenuScreen()
+int Game::mainMenuScreen()
 {
     int playerAmount = 0;
 
@@ -117,7 +129,7 @@ void Game::mainMenuScreen()
 
     std::array<std::array<SDL_Texture*,2>, 4> players =
             {
-                    { {TextureManager::LoadTexture("Sprites/chararcter/player.png"), p1},
+                    { {TextureManager::LoadTexture("Sprites/chararcter/player1.png"), p1},
                             {TextureManager::LoadTexture("Sprites/chararcter/player2.png"), p2},
                             {TextureManager::LoadTexture("Sprites/chararcter/player3.png"), p3},
                             {TextureManager::LoadTexture("Sprites/chararcter/player4.png"), p4}
@@ -140,7 +152,6 @@ void Game::mainMenuScreen()
         switch (s_event.type) {
             case SDL_QUIT:
                 isRunning = false;
-                return;
 
             case SDL_TEXTINPUT:
                 if (currentTextInputButton)
@@ -223,6 +234,8 @@ void Game::mainMenuScreen()
         }
         SDL_RenderPresent(Game::s_renderer);
     }
+
+    return playerAmount;
 }
 
 void Game::handleEvents()
@@ -445,11 +458,19 @@ void Game::AddBlock(int x, int y)
 
 }
 
+bool Game::isStartPos(int x, int y)
+{
+    return true;
+}
+
 void Game::AddTile(int id, int x, int y)
 {
     auto& tile(manager.addEntity());
     tile.addComponent<TileComponent>(x, y, SPRITE_SIZE, SPRITE_SIZE, id);
-    int add = SDL_GetTicks()%5;
+    int add = SDL_GetTicks()%1;
+
+    if (x == 1*32 && y == 1*32 || x == 1*32 && y == 23*32 || x == 23*32 && y == 1*32 || x == 23*32 && y == 23*32)
+        return;
 
     if (id == 0)
     {
@@ -457,7 +478,8 @@ void Game::AddTile(int id, int x, int y)
         tile.addGroup(groupColliders);
     }
     else if (id == 2) {
-        if (add) {
+        if (add)
+        {
             tile.addComponent<BlockComponent>(x, y);
             tile.addComponent<ColliderComponent>("block");
             tile.addGroup(groupColliders );

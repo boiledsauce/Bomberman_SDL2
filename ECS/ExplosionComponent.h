@@ -28,7 +28,7 @@ public:
     void init() override
     {
      m_duration += SDL_GetTicks();
-     m_entity->addComponent<TransformComponent>(m_x,m_y);
+     m_entity->addComponent<TransformComponent>(m_x, m_y);
      m_entity->addComponent<SpriteComponent>("Sprites/explosion.png");
     }
     void update() override
