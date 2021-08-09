@@ -4,11 +4,11 @@
 # Install:
 1. Download the SDL2 library, place it somewhere.
 
-2. Replace these in the CMakeLists.txt to yours here;
+2. Replace my values in the CMakeLists.txt to yours here;
  
- set(SDL2_INCLUDE_DIR YOUR_INCLUDE_PATH_HERE/include)
+ set(SDL2_INCLUDE_DIR YOUR_SDL2_INCLUDE_PATH_HERE/include)
  
- set(SDL2_LIB_DIR YOUR_LIBS_PATH_HERE/lib/x86)
+ set(SDL2_LIB_DIR YOUR_SDL2_LIBS_PATH_HERE/lib/x86)
   
   3. Remove ${BOOST_INCLUDE_DIR and ${BOOST_LIB_DIR} (Not really needed at the moment)
 
