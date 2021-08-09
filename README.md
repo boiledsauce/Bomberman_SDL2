@@ -10,6 +10,9 @@
  
  set(SDL2_LIB_DIR YOUR_LIBS_PATH_HERE/lib/x86)
   
+  3. Remove ${BOOST_INCLUDE_DIR and ${BOOST_LIB_DIR} (Not really needed at the moment)
+
+
 https://user-images.githubusercontent.com/85931509/128648481-1c04fd08-d900-47e3-98f1-3bc7d1d6e7ab.mp4
 
 # Bomberman_SDL2
