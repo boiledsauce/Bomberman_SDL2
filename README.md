@@ -10,7 +10,7 @@
  
  set(SDL2_LIB_DIR YOUR_SDL2_LIBS_PATH_HERE/lib/x86)
   
-3. Create a new project in Visual Studio. Use 32 bit (x86) MSVC Compiler for it.
+3. Create a new empty c++ project in Visual Studio. Use 32 bit (x86) MSVC Compiler for it.
 
 4. File -> Open CMAKE -> Select the CMakeList.txt
 
