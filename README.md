@@ -7,6 +7,7 @@
 2. Replace my values in the CMakeLists.txt to yours here;
  
  set(SDL2_INCLUDE_DIR YOUR_SDL2_INCLUDE_PATH_HERE/include)
+ 
  set(SDL2_LIB_DIR YOUR_SDL2_LIBS_PATH_HERE/lib/x86)
   
 3. Create a new project in Visual Studio. Use 32 bit (x86) MSVC Compiler for it.
