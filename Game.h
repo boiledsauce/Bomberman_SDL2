@@ -65,7 +65,7 @@ public:
     static void AddBomb(int x, int y, int timer, int damage, int radX, int radY, int *bombAmount);
     static void AddExplosion(int x, int y, int damage, int duration);
     static void AddReward(int x, int y);
-    bool isStartPos(int x, int y);
+    static bool isStartPos(int x, int y);
     //bool Game::hasExplosion(int x, int y);
 
     static BombComponent* Bomb(int x, int y);

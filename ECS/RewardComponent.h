@@ -7,7 +7,7 @@
 #include "Components.h"
 #include "SDL.h"
 #include "SpriteComponent.h"
-#include "RandomNumber.h"
+#include "..\RandomNumber.h"
 
 enum reward : int {NO_REWARD, SPEED_PLAYER, DAMAGE, RADIUS, SPEED_BOMB, EXTRA_BOMB, END_OF_ENUM_REWARD};
 

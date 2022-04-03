@@ -70,77 +70,6 @@ public:
                                   m_attributes->m_explosionRadiusY, &m_attributes->m_bombAmount);
                 }
             }
-
-//            switch (Game::s_event.key.keysym.sym) {
-//                case SDLK_UP:
-//                    m_transform->m_velocity.y = -1;
-//                    m_sprite->Play("Walk");
-//                    break;
-//
-//                case SDLK_DOWN:
-//                    m_transform->m_velocity.y = 1;
-//                    m_sprite->Play("Walk");
-//                    break;
-//
-//                case SDLK_RIGHT:
-//                    m_transform->m_velocity.x = 1;
-//                    m_sprite->Play("Walk");
-//                    break;
-//
-//                case SDLK_LEFT:
-//                    m_transform->m_velocity.x = -1;
-//                    m_sprite->Play("Walk");
-//                    m_sprite->m_spriteFlip = SDL_FLIP_HORIZONTAL;
-//                    break;
-//
-//                case SDLK_SPACE: {
-//                    int x = m_transform->m_position.Normalize(m_transform->m_position.x);
-//                    int y = m_transform->m_position.Normalize(m_transform->m_position.y);
-//                    if (m_attributes->m_bombAmount > 0 && Game::Bomb(x, y) == nullptr) {
-//
-//                        m_attributes->m_bombAmount -= 1;
-//                        Game::AddBomb(m_transform->m_position.x, m_transform->m_position.y, m_attributes->m_bombTimer,
-//                                      m_attributes->m_explosionDamage, m_attributes->m_explosionRadiusX,
-//                                      m_attributes->m_explosionRadiusY,  &m_attributes->m_bombAmount);
-//                    }
-//                    break;
-//                }
-//                default:
-//                    break;
-//            }
-//        }
-
-//        if (Game::s_event.type == SDL_KEYUP) {
-//
-//            switch (Game::s_event.key.keysym.sym) {
-//                case SDLK_UP:
-//                    m_transform->m_velocity.y = 0;
-//                    m_sprite->Play("Idle");
-//                    break;
-//
-//                case SDLK_DOWN:
-//                    m_transform->m_velocity.y = 0;
-//                    m_sprite->Play("Idle");
-//                    break;
-//
-//                case SDLK_RIGHT:a
-//                    break;
-//
-//                case SDLK_LEFT:
-//                    m_transform->m_velocity.x = 0;
-//                    m_sprite->Play("Idle");
-//                    m_sprite->m_spriteFlip = SDL_FLIP_NONE;
-//                    break;
-//
-//                case SDLK_SPACE:
-//                    break;
-//
-//                default:
-//                    //m_sprite->Play("");
-//                    break;
-//            }
-//
-//        }
         }
         else if (Game::s_event.type == SDL_KEYUP)
         {
@@ -158,7 +87,7 @@ public:
             } else if (key == m_keys.left) {
                 m_transform->m_velocity.x = 0;
                 m_sprite->Play("Idle");
-                m_sprite->m_spriteFlip = SDL_FLIP_HORIZONTAL;
+                m_sprite->m_spriteFlip = SDL_FLIP_NONE;
             }
         }
     }

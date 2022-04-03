@@ -9,12 +9,14 @@
 #include "TransformComponent.h"
 #include "SpriteComponent.h"
 #include "SDL.h"
-#include "Constants.h"
+#include "..\Constants.h"
 #include "..\Game.h"
 #include "BlockComponent.h"
 #include "ExplosionComponent.h"
 #include "RewardComponent.h"
 enum groupLabels : std::size_t;
+const int WALKABLE_TILE = 0;
+const int BLOCK_TILE = 1;
 
 class TileComponent : public Component
 {

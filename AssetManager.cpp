@@ -1,7 +1,7 @@
  //
 // Created by lowIQ on 2021-06-27.
 //
-#include "Assetmanager.h"
+#include "AssetManager.h"
 
 AssetManager::AssetManager(Manager *man) : m_manager(man)
 {

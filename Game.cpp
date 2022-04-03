@@ -16,6 +16,7 @@
 //#include <boost/asio.hpp>
 //#include <boost/filesystem.hpp>
 
+
 SDL_Window* Game::s_window = nullptr;
 SDL_Renderer* Game::s_renderer = nullptr;
 Map* map;
@@ -70,7 +71,7 @@ void Game::init(const char *title, int xPos, int yPos, int width, int height, bo
     //ecs implementation
     Map::LoadMap("Sprites/bomberman.txt", 25, 25);
 
-    std::array<std::pair<int,int>, 4> startPos = {std::make_pair(1*32, 1*32), std::make_pair(1*32, 23*32), std::make_pair(23*32, 1*32), std::make_pair(23*32, 23*32) };
+    std::array<std::pair<int,int>, 4> startPos = {std::make_pair(1*32, 1*32),  std::make_pair(23*32, 23*32), std::make_pair(1*32, 23*32), std::make_pair(23*32, 1*32) };
     std::array<std::array<SDL_KeyCode, 5>, 4> controllers = {{
             {SDLK_UP, SDLK_DOWN, SDLK_RIGHT, SDLK_LEFT, SDLK_SPACE},
             {SDLK_w, SDLK_s, SDLK_d, SDLK_a, SDLK_TAB},
@@ -460,25 +461,25 @@ void Game::AddBlock(int x, int y)
 
 bool Game::isStartPos(int x, int y)
 {
-    return true;
+    return (x == 1*32 && y == 1*32 || x == 1*32 && y == 23*32 || x == 23*32 && y == 1*32 || x == 23*32 && y == 23*32);
 }
 
 void Game::AddTile(int id, int x, int y)
 {
     auto& tile(manager.addEntity());
     tile.addComponent<TileComponent>(x, y, SPRITE_SIZE, SPRITE_SIZE, id);
-    int add = SDL_GetTicks()%1;
+    const int randomDecideShouldBeBlock = SDL_GetTicks()%2;
 
-    if (x == 1*32 && y == 1*32 || x == 1*32 && y == 23*32 || x == 23*32 && y == 1*32 || x == 23*32 && y == 23*32)
+    if (Game::isStartPos(x, y))
         return;
 
-    if (id == 0)
+    if (id == WALKABLE_TILE)
     {
         tile.addComponent<ColliderComponent>("block");
         tile.addGroup(groupColliders);
     }
-    else if (id == 2) {
-        if (add)
+    else if (id == BLOCK_TILE) {
+        if (randomDecideShouldBeBlock)
         {
             tile.addComponent<BlockComponent>(x, y);
             tile.addComponent<ColliderComponent>("block");
@@ -486,9 +487,7 @@ void Game::AddTile(int id, int x, int y)
         }
     }
 
-
     tile.addGroup(groupMap);
-
 }
 
 void Game::AddBomb(int x, int y, int timer, int damage, int radiusX, int radiusY, int* bombAmount)

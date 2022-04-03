@@ -16,7 +16,7 @@ int main( int argc, char* args[] )
     while(game->running())
     {
         frameStart = SDL_GetTicks();
-
+        std::cout << "Hej" << std::endl;
         game->handleEvents();   //handle any user input
         game->update();         //update all object eg. positions etc.
         game->render();         //render changes to the display

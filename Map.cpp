@@ -33,3 +33,5 @@ void Map::LoadMap(std::string path, int sizeX, int sizeY)
 }
 
 
+
+
